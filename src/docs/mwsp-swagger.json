@@ -1,0 +1,1291 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MWSP Cash Register API",
+    "description": "This is the API for the admin panel of the MijnWebshopPartner.nl webshop management portal. The intended use is for the cash register, but other applications are also possible. Authentication at the moment is limited to shop manager accounts.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://bootstrap.mijnwebshoppartner/admin/v2",
+      "variables": {
+        "base_url": {
+          "default": "https://bootstrap.mijnwebshoppartner/admin/v2",
+          "description": "Base API endpoint"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/client": {
+      "post": {
+        "summary": "Client Operations",
+        "description": "Supports multiple operations for clients, including filters by email address and postcode/number.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ClientFilterByEmail"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ClientFilterByPostcodeAndNumber"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response with list of clients.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Clients"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "summary": "CreateClient",
+        "description": "Creates a new client with the provided data.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Client created successfully, the Id is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 123
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/product": {
+      "get": {
+        "summary": "GetProducts",
+        "description": "Retrieves a list of all products.",
+        "responses": {
+          "200": {
+            "description": "Successful response with products data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref":"#/components/schemas/Products"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "summary": "Product Operations",
+        "description": "Supports multiple operations for products, including filters by ID, barcode, and combination of name, SKU, and factory SKU.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ProductFilterById"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ProductFilterByBarcode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ProductFilterByNameSkuAndFactorySku"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation based on the filter applied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref":"#/components/schemas/Products"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/product/{id}": {
+      "get": {
+        "summary": "GetProductById",
+        "description": "Retrieves a product by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Product ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with product data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref":"#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/order": {
+      "put": {
+        "summary": "CreateOrder",
+        "description": "Create a new order",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order created successfully, the Id is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "example": 123
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/country": {
+      "get": {
+        "summary": "GetCountries",
+        "description": "Retrieves a list of countries.",
+        "responses": {
+          "200": {
+            "description": "Successful response with list of countries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Countries"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "$ref": "#/components/responses/MethodNotAllowed"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClientFilterByEmail": {
+        "type": "object",
+        "properties": {
+          "EmailAddress": {
+            "type": "string",
+            "example": "johnsmith@example.org"
+          }
+        },
+        "required": ["EmailAddress"]
+      },
+      "ClientFilterByPostcodeAndNumber": {
+        "type": "object",
+        "properties": {
+          "Postcode": {
+            "type": "string",
+            "example": "12345"
+          },
+          "Number": {
+            "type": "string",
+            "example": "123"
+          }
+        },
+        "required": ["Postcode", "Number"]
+      },
+      "OrderFilter": {
+        "type": "object",
+        "properties": {
+          "OrderId": {
+            "type": "string",
+            "example": "ORD12345"
+          }
+        },
+        "required": ["OrderId"]
+      },      
+      "ProductFilterById": {
+        "type": "object",
+        "properties": {
+          "ProductId": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": ["ProductId"]
+      },
+      "ProductFilterByBarcode": {
+        "type": "object",
+        "properties": {
+          "barcode": {
+            "type": "string",
+            "example": "177653-155485"
+          }
+        },
+        "required": ["barcode"]
+      },
+      "ProductFilterByNameSkuAndFactorySku": {
+        "type": "object",
+        "properties": {
+          "ProductName": {
+            "type": "string",
+            "example": "Azera"
+          },
+          "SKU": {
+            "type": "string",
+            "example": "773"
+          },
+          "SKUFactory": {
+            "type": "string",
+            "example": "773"
+          }
+        }
+      },
+      "AddressModel": {
+        "type": "object",
+        "properties": {
+          "Street": {
+            "type": "string",
+            "example": "Main Street"
+          },
+          "Number": {
+            "type": "string",
+            "example": "123"
+          },
+          "NumberSuffix": {
+            "type": "string",
+            "example": "A"
+          },
+          "Postcode": {
+            "type": "string",
+            "example": "12345"
+          },
+          "City": {
+            "type": "string",
+            "example": "Anytown"
+          },
+          "Country": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": ["Street", "Number" , "Postcode", "City", "Country"]
+      },
+      "ClientFilter": {
+        "type": "object",
+        "properties": {
+          "Postcode": {
+            "type": "string",
+            "example": "12345"
+          },
+          "Number": {
+            "type": "string",
+            "example": "123"
+          },
+          "EmailAddress": {
+            "type": "string",
+            "example": "johnsmith@example.org"
+          }
+        }
+      },
+      "ClientModel": {
+        "type": "object",
+        "properties": {
+          "Gender": {
+            "type": "string",
+            "example": "Man"
+          },
+          "Firstname": {
+            "type": "string",
+            "example": "John"
+          },
+          "Lastname": {
+            "type": "string",
+            "example": "Smith"
+          },
+          "Address": {
+            "$ref": "#/components/schemas/AddressModel"
+          },
+          "Phonenumber": {
+            "type": "string",
+            "example": "+31612345678"
+          },
+          "EmailAddress": {
+            "type": "string",
+            "example": "johnsmith@example.org"
+          },
+          "Company": {
+            "type": "string",
+            "example": "John's Widgets"
+          },
+          "TaxNumber": {
+            "type": "string",
+            "example": "NL123123123B01"
+          },
+          "CocNumber": {
+            "type": "string",
+            "example": "123123123"
+          },
+          "Sepa": {
+            "type": "string",
+            "example": "NL91ABNA0417164300"
+          },
+          "Birthdate": {
+            "type": "string",
+            "example": "1990-05-04"
+          }
+        },
+        "required": ["Gender", "Firstname", "Lastname", "Address", "Phonenumber", "EmailAddress", "Birthdate"]
+      },
+      "OrderItemModel": {
+        "type": "object",
+        "properties": {
+          "ProductId": {
+            "type": "integer",
+            "example": 101
+          },
+          "Amount": {
+            "type": "integer",
+            "example": 2
+          },
+          "Cycle": {
+            "type": "string",
+            "example": "Monthly"
+          }
+        }
+      },
+      "OrderModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "ClientId": {
+            "type": "integer",
+            "example": 10
+          },
+          "BranchId": {
+            "type": "integer",
+            "example": 3
+          },
+          "PaymentStatus": {
+            "type": "string",
+            "example": "Success"
+          },
+          "Status": {
+            "type": "string",
+            "example": "open"
+          },
+          "AfleverAdres": {
+            "type": "integer",
+            "example": 5
+          },
+          "Notice": {
+            "type": "string",
+            "example": "Leave at the front desk."
+          },
+          "VisitorType": {
+            "type": "string",
+            "example": "cashregister"
+          },
+          "Shipper": {
+            "type": "string",
+            "example": "UPS"
+          },
+          "isDelivered": {
+            "type": "boolean",
+            "example": true
+          },
+          "DeliveryPickupDate": {
+            "type": "string",
+            "example": "2024-05-01"
+          },
+          "DeliveryPickupTime": {
+            "type": "string",
+            "example": "10:30"
+          },
+          "Currency": {
+            "type": "string",
+            "example": "EUR"
+          },
+          "PointsUsed": {
+            "type": "integer",
+            "example": 20
+          },
+          "PointsUsedValue": {
+            "type": "integer",
+            "example": 10
+          },
+          "ShippingCost": {
+            "type": "integer",
+            "example": 5
+          },
+          "PartnerId": {
+            "type": "integer",
+            "example": 4
+          },
+          "Items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemModel"
+            }
+          }
+        }
+      },
+      "ProductFilter": {
+        "type": "object",
+        "properties": {
+          "ProductId": {
+            "type": "integer",
+            "example": 1
+          },
+          "ProductName": {
+            "type": "string",
+            "example": "Azera"
+          },
+          "SKU": {
+            "type": "string",
+            "example": "773"
+          },
+          "SKUFactory": {
+            "type": "string",
+            "example": "773"
+          },
+          "barcode": {
+            "type": "string",
+            "example": "177653-155485"
+          }
+        }
+      },
+      "Products": {
+        "type": "array",
+        "items": {
+          "$ref":"#/components/schemas/Product"
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "integer",
+            "example": 101
+          },
+          "product_length": {
+            "type": "string",
+            "example": "10.00"
+          },
+          "product_height": {
+            "type": "string",
+            "example": "20.00"
+          },
+          "product_width": {
+            "type": "string",
+            "example": "15.00"
+          },
+          "product_weight": {
+            "type": "integer",
+            "example": 300
+          },
+          "product_cross_section": {
+            "type": "string",
+            "example": "30"
+          },
+          "product_measure_unit": {
+            "type": "string",
+            "example": "cm"
+          },
+          "min_quantity": {
+            "type": "integer",
+            "example": 1
+          },
+          "product_name": {
+            "type": "string",
+            "example": "Family Paper Towels"
+          },
+          "product_desc": {
+            "type": "string",
+            "example": "<p>High-quality paper towels for household use.</p>"
+          },
+          "product_desc_short": {
+            "type": "string",
+            "example": "Quality paper towels for everyday use."
+          },
+          "product_url": {
+            "type": "string",
+            "example": "paper-towels-123"
+          },
+          "product_full_image": {
+            "type": "string",
+            "example": "/media/product/paper_towels.jpg"
+          },
+          "product_sku": {
+            "type": "string",
+            "example": "PT-123"
+          },
+          "product_sku_factory": {
+            "type": "string",
+            "example": "F-123"
+          },
+          "create_date": {
+            "type": "string",
+            "example": "2024-01-01"
+          },
+          "product_sales": {
+            "type": "integer",
+            "example": 100
+          },
+          "product_recurring": {
+            "type": "boolean",
+            "example": true
+          },
+          "barcode": {
+            "type": "string",
+            "example": "1234567890123"
+          },
+          "product_in_stock": {
+            "type": "integer",
+            "example": 50
+          },
+          "product_minimum_in_stock": {
+            "type": "integer",
+            "example": 10
+          },
+          "product_video_url": {
+            "type": "string",
+            "example": "http://www.youtube.com/embed/123"
+          },
+          "product_publish": {
+            "type": "boolean",
+            "example": true
+          },
+          "loyalty_points": {
+            "type": "integer",
+            "example": 5
+          },
+          "category_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "category_child_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "category_parent_id": {
+            "type": "integer",
+            "example": 0
+          },
+          "brandid": {
+            "type": "integer",
+            "example": 200
+          },
+          "product_list": {
+            "type": "integer",
+            "example": 2
+          },
+          "product_sending": {
+            "type": "string",
+            "example": "weight"
+          },
+          "product_sending_price": {
+            "type": "string",
+            "example": "2.00"
+          },
+          "specs": {
+            "type": "string",
+            "example": "Color-|-White~|~Size-|-Large"
+          },
+          "specifications": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Name": {
+                  "type": "string",
+                  "example": "Material"
+                },
+                "Value": {
+                  "type": "string",
+                  "example": "Paper"
+                }
+              }
+            }
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "/media/pdf/product_manual.pdf"
+            }
+          },
+          "image": {
+            "type": "string",
+            "example": "/media/product/paper_towels.jpg"
+          },
+          "video": {
+            "type": "string",
+            "example": "http://www.youtube.com/embed/123"
+          },
+          "relatedProducts": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "example": 102
+            }
+          },
+          "link": {
+            "type": "string",
+            "example": "/household/paper-towels-123"
+          },
+          "brand": {
+            "type": "object",
+            "properties": {
+              "brand_id": {
+                "type": "integer",
+                "example": 134
+              },
+              "url": {
+                "type": "string",
+                "example": "coca-cola"
+              },
+              "name": {
+                "type": "string",
+                "example": "Coca-Cola"
+              },
+              "description": {
+                "type": "string",
+                "example": "<p>Coca-Cola is one of the world's most recognized soft drink brands...</p>"
+              },
+              "link": {
+                "type": "string",
+                "example": "coca-cola"
+              },
+              "image": {
+                "type": "string",
+                "example": "coca-cola-logo.svg"
+              },
+              "isActive": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          },
+          "prices": {
+            "type": "object",
+            "properties": {
+              "general": {
+                "type": "object",
+                "properties": {
+                  "price": {
+                    "type": "string",
+                    "example": "5.00"
+                  },
+                  "sprice": {
+                    "type": "string",
+                    "example": "4.50"
+                  },
+                  "tax_rate": {
+                    "type": "string",
+                    "example": "1.21"
+                  },
+                  "cycle": {
+                    "type": "string",
+                    "example": "general"
+                  },
+                  "product_id": {
+                    "type": "integer",
+                    "example": 101
+                  }
+                }
+              }
+            }
+          },
+          "staffels": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "5%"
+            }
+          },
+          "product_special": {
+            "type": "boolean",
+            "example": true
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "optionid": {
+                  "type": "integer",
+                  "example": 68
+                },
+                "titel": {
+                  "type": "string",
+                  "example": "Sizes (S, M, L, XL)"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "waarde": {
+                        "type": "string",
+                        "example": "Size L"
+                      },
+                      "price": {
+                        "type": "string",
+                        "example": "10.00"
+                      },
+                      "onchange": {
+                        "type": "string",
+                        "example": "68|1|Size L|1000|125"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "downloads": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Product Guide"
+                },
+                "link": {
+                  "type": "string",
+                  "example": "/media/pdf/product_guide.pdf"
+                }
+              }
+            }
+          },
+          "optiefotos": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Alternate Image"
+                },
+                "image": {
+                  "type": "string",
+                  "example": "/media/product/alternate_image.jpg"
+                }
+              }
+            }
+          },
+          "audio": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "/media/music/example.mp3"
+            }
+          },
+          "smallimages": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "/media/product/small_image1.jpg"
+            }
+          },
+          "displayPrice": {
+            "type": "number",
+            "example": 5.00
+          },
+          "standardPrice": {
+            "type": "number",
+            "example": 5.50
+          },
+          "percent": {
+            "type": "number",
+            "example": 10
+          },
+          "show_price": {
+            "type": "object",
+            "properties": {
+              "incl": {
+                "type": "boolean",
+                "example": true
+              },
+              "excl": {
+                "type": "boolean",
+                "example": false
+              },
+              "both": {
+                "type": "boolean",
+                "example": false
+              },
+              "set_btw": {
+                "type": "boolean",
+                "example": true
+              },
+              "valuta": {
+                "type": "string",
+                "example": "USD"
+              },
+              "with": {
+                "type": "boolean",
+                "example": true
+              },
+              "show": {
+                "type": "boolean",
+                "example": true
+              },
+              "footer": {
+                "type": "boolean",
+                "example": false
+              }
+            }
+          },
+          "amount": {
+            "type": "integer",
+            "example": 0
+          },
+          "display": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Display Property"
+            }
+          },
+          "tabs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Tab Content"
+            }
+          },
+          "customTabs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Custom Tab Content"
+            }
+          },
+          "filter_values": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "Color|White"
+            }
+          },
+          "highlighted": {
+            "type": "boolean",
+            "example": false
+          },
+          "bestseller": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "Countries": {
+        "type":"array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "name": {
+              "type": "string",
+              "example": "Netherlands"
+            },
+            "active": {
+              "type": "boolean",
+              "example": true
+            },
+            "default": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        }
+      },
+      "Clients": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ClientResponseModel"
+        }
+      },
+      "ClientResponseModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 123
+          },
+          "Gender": {
+            "type": "string",
+            "example": "Male"
+          },
+          "Firstname": {
+            "type": "string",
+            "example": "John"
+          },
+          "Lastname": {
+            "type": "string",
+            "example": "Smith"
+          },
+          "Street": {
+            "type": "string",
+            "example": "Main Street"
+          },
+          "Number": {
+            "type": "string",
+            "example": "123"
+          },
+          "NumberSuffix": {
+            "type": "string",
+            "example": "A"
+          },
+          "Postcode": {
+            "type": "string",
+            "example": "12345"
+          },
+          "City": {
+            "type": "string",
+            "example": "Anytown"
+          },
+          "Country": {
+            "type": "integer",
+            "example": 123
+          },
+          "Phonenumber": {
+            "type": "string",
+            "example": "+31612345678"
+          },
+          "EmailAddress": {
+            "type": "string",
+            "example": "johnsmith@example.org"
+          },
+          "Company": {
+            "type": "string",
+            "example": "John's Widgets"
+          },
+          "TaxNumber": {
+            "type": "string",
+            "example": "NL123123123B01"
+          },
+          "CocNumber": {
+            "type": "string",
+            "example": "123123123"
+          },
+          "Sepa": {
+            "type": "string",
+            "example": "NL91ABNA0417164300"
+          },
+          "Birthdate": {
+            "type": "string",
+            "example": "1990-05-04"
+          }
+        },
+        "required": ["id", "Firstname", "Lastname", "Street", "Number", "Postcode", "City", "Country", "Phonenumber", "EmailAddress"]
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request is malformed or invalid.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 400
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request or invalid argument"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Authentication credentials are missing or incorrect.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 401
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The requested resource could not be found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "The requested resource was not found."
+                }
+              }
+            }
+          }
+        }
+      },
+      "MethodNotAllowed": {
+        "description": "The request has a method that is not allowed.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 405
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Incorrect verb"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnprocessableEntity": {
+        "description": "Unprocessable entity.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 422
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unprocessable entity received"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "The server returned an unexpected error.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "example": 500
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

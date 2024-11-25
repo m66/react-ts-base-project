@@ -1,0 +1,1 @@
+export type ObjectGeneric = Record<string, string | number>
